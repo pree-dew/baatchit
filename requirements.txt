@@ -1,0 +1,10 @@
+python-dotenv
+librosa
+sounddevice
+soundfile
+praat-parselmouth
+silero-vad
+torch
+openai
+anthropic
+yt-dlp
