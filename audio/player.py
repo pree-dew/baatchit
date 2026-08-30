@@ -1,3 +1,5 @@
+import asyncio
+
 import sounddevice as sd
 import soundfile as sf
 
@@ -8,7 +10,7 @@ def play_audio(path: str) -> None:
     sd.wait()
 
 
-def play_audio_interruptible(path: str, stop_check) -> bool:
+async def play_audio_interruptible(path: str, stop_check) -> bool:
     audio, sr = sf.read(path)
     sd.play(audio, sr)
 
@@ -17,6 +19,6 @@ def play_audio_interruptible(path: str, stop_check) -> bool:
         if stop_check():
             sd.stop()
             return True
-        sd.sleep(100)
+        await asyncio.sleep(0.1)
 
     return False

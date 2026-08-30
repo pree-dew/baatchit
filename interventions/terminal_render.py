@@ -1,10 +1,10 @@
 import sys
 
 
-def render_breathing(state_stream, stop_check) -> bool:
+async def render_breathing(state_stream, stop_check) -> bool:
     last_cycle = None
 
-    for state in state_stream:
+    async for state in state_stream:
         if stop_check():
             print("\nStopped.")
             return True
@@ -21,8 +21,8 @@ def render_breathing(state_stream, stop_check) -> bool:
     return False
 
 
-def render_walk_timer(state_stream, stop_check) -> bool:
-    for state in state_stream:
+async def render_walk_timer(state_stream, stop_check) -> bool:
+    async for state in state_stream:
         if stop_check():
             print("\nStopped.")
             return True

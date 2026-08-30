@@ -3,5 +3,15 @@ __pycache__/
 *.pyc
 .env
 data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
 data/recordings/*
 !data/recordings/.gitkeep
+
+# frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/*.local
+frontend/npm-debug.log*

@@ -8,3 +8,5 @@ torch
 openai
 anthropic
 yt-dlp
+fastapi
+uvicorn

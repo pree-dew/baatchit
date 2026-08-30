@@ -1,3 +1,4 @@
+import asyncio
 import base64
 import subprocess
 import sys
@@ -14,7 +15,7 @@ THEME_URLS = {
 _CHUNK_SIZE = 4096
 
 
-def _convert_to_png(image_bytes: bytes, stop_check) -> bytes | None:
+async def _convert_to_png(image_bytes: bytes, stop_check) -> bytes | None:
     with tempfile.TemporaryDirectory() as tmp_dir:
         src_path = Path(tmp_dir) / "source"
         png_path = Path(tmp_dir) / "converted.png"
@@ -26,15 +27,12 @@ def _convert_to_png(image_bytes: bytes, stop_check) -> bytes | None:
             stderr=subprocess.DEVNULL,
         )
 
-        while True:
-            try:
-                process.wait(timeout=0.1)
-                break
-            except subprocess.TimeoutExpired:
-                if stop_check():
-                    process.terminate()
-                    process.wait()
-                    return None
+        while process.poll() is None:
+            if stop_check():
+                process.terminate()
+                await asyncio.get_event_loop().run_in_executor(None, process.wait)
+                return None
+            await asyncio.sleep(0.1)
 
         if not png_path.exists():
             return None
@@ -55,18 +53,22 @@ def _display_inline(png_bytes: bytes) -> None:
     sys.stdout.flush()
 
 
-def show_soothing_image(theme: str, stop_check) -> bool:
+async def fetch_and_convert(theme: str, stop_check) -> bytes | None:
     if stop_check():
-        return True
+        return None
 
     url = THEME_URLS[theme]
     with urllib.request.urlopen(url) as response:
         image_bytes = response.read()
 
     if stop_check():
-        return True
+        return None
 
-    png_bytes = _convert_to_png(image_bytes, stop_check)
+    return await _convert_to_png(image_bytes, stop_check)
+
+
+async def show_soothing_image(theme: str, stop_check) -> bool:
+    png_bytes = await fetch_and_convert(theme, stop_check)
     if png_bytes is None:
         return True
 

@@ -1,7 +1,7 @@
-import time
+import asyncio
 
 
-def run_walk_timer(duration_minutes: int):
+async def run_walk_timer(duration_minutes: int):
     total_seconds = duration_minutes * 60
 
     for remaining in range(total_seconds, 0, -1):
@@ -9,4 +9,4 @@ def run_walk_timer(duration_minutes: int):
             "remaining_seconds": remaining,
             "total_seconds": total_seconds,
         }
-        time.sleep(1)
+        await asyncio.sleep(1)

@@ -1,4 +1,4 @@
-import time
+import asyncio
 
 PACE_PATTERNS = {
     "4-7-8": [("Breathe in", 4), ("Hold", 7), ("Breathe out", 8)],
@@ -9,7 +9,7 @@ PACE_PATTERNS = {
 CYCLES = 3
 
 
-def run_breathing(pace: str):
+async def run_breathing(pace: str):
     pattern = PACE_PATTERNS[pace]
 
     for cycle in range(1, CYCLES + 1):
@@ -21,4 +21,4 @@ def run_breathing(pace: str):
                     "cycle": cycle,
                     "total_cycles": CYCLES,
                 }
-                time.sleep(1)
+                await asyncio.sleep(1)
